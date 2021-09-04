@@ -10,14 +10,15 @@ using namespace std;
 void sleep();
 
 class Leg{
-    string which;
     string message;
     thread t;
+    mutex * main_mtx;
 public:
     Leg * next_leg;
     mutex mtx;
+    string which;
 
-    Leg(string which, string message);
+    Leg(string which, string message, mutex * main_mtx);
     
     void walk();
     void step();
