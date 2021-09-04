@@ -26,11 +26,9 @@ int main(){
     Leg * cur = &leg1;
 
     while (true){
-        //cout << "(DBG) " << "Unlocking " << cur->which << endl;
         cur->mtx.unlock();
         sleep();
         cur->mtx.lock();
-        //cout << "(DBG) " << "Main woke up" << endl;
         cur = next_from[cur];
     }
 
