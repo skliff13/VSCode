@@ -23,14 +23,14 @@ void Leg::walk(){
 void Leg::step(){
     mtx.lock();
     //cout << "(DBG) " << which << " unlocked" << endl;
-    main_mtx->lock();
     cout << which << " leg up" << endl;
     sleep();
     cout << "\t" << message << endl;
     sleep();
     cout << which << " leg down" << endl;
     //cout << "(DBG) " << "Unlocking main" << endl;
-    main_mtx->unlock();
+    mtx.unlock();
+    sleep();
     //cout << "(DBG) " << which << " self-locking" << endl;
     //mtx.lock();
 }

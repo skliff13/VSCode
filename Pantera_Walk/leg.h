@@ -14,7 +14,6 @@ class Leg{
     thread t;
     mutex * main_mtx;
 public:
-    Leg * next_leg;
     mutex mtx;
     string which;
 

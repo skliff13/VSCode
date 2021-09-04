@@ -3,6 +3,7 @@
 #include <chrono>
 #include <thread>
 #include <string>
+#include <map>
 #include "leg.h"
 #include "common.h"
 
@@ -16,10 +17,11 @@ int main(){
     Leg leg3("Back left", "WALK!", &main_mtx);
     Leg leg4("Back right", "WHAT DID YOU SAY?!", &main_mtx);
 
-    leg1.next_leg = &leg2;
-    leg2.next_leg = &leg3;
-    leg3.next_leg = &leg4;
-    leg4.next_leg = &leg1;
+    map<Leg *, Leg *> next_from;
+    next_from[&leg1] = &leg2;
+    next_from[&leg2] = &leg3;
+    next_from[&leg3] = &leg4;
+    next_from[&leg4] = &leg1;
     
     Leg * cur = &leg1;
 
@@ -27,10 +29,9 @@ int main(){
         //cout << "(DBG) " << "Unlocking " << cur->which << endl;
         cur->mtx.unlock();
         sleep();
-        main_mtx.lock();
-        main_mtx.unlock();
+        cur->mtx.lock();
         //cout << "(DBG) " << "Main woke up" << endl;
-        cur = cur->next_leg;
+        cur = next_from[cur];
     }
 
     return 0;
