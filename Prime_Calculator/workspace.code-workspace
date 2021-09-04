@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"vector": "cpp",
+			"chrono": "cpp",
+			"mutex": "cpp",
+			"string": "cpp"
+		}
+	}
+}
