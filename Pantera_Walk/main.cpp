@@ -16,6 +16,7 @@ void sleep(){
 class Leg{
     string which;
     string message;
+    thread t;
 public:
     Leg * next_leg;
     mutex mtx;
@@ -24,6 +25,8 @@ public:
         this->which = which;
         this->message = message;
         mtx.lock();
+
+        t = thread(Leg::walk, this);
     }
 
     void walk(){
@@ -48,15 +51,11 @@ int main(){
     Leg leg2("Front right", "SPECT!");
     Leg leg3("Back left", "WALK!");
     Leg leg4("Back right", "WHAT DID YOU SAY?!");
+
     leg1.next_leg = &leg2;
     leg2.next_leg = &leg3;
     leg3.next_leg = &leg4;
     leg4.next_leg = &leg1;
-    
-    thread t4(Leg::walk, &leg4);
-    thread t1(Leg::walk, &leg1);
-    thread t3(Leg::walk, &leg3);
-    thread t2(Leg::walk, &leg2);
     
     leg1.mtx.unlock();
 
