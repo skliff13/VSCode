@@ -53,10 +53,11 @@ int main(){
     leg3.next_leg = &leg4;
     leg4.next_leg = &leg1;
 
-    thread t1(task, &leg1);
-    thread t2(task, &leg2);
-    thread t3(task, &leg3);
     thread t4(task, &leg4);
+    thread t1(task, &leg1);
+    thread t3(task, &leg3);
+    thread t2(task, &leg2);
+    
     leg1.mtx.unlock();
 
     while (true){
