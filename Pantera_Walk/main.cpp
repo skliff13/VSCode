@@ -26,6 +26,12 @@ public:
         mtx.lock();
     }
 
+    void walk(){
+        while (true){
+            step();
+        }
+    }
+
     void step(){
         mtx.lock();
         cout << which << " leg up" << endl;
@@ -37,12 +43,6 @@ public:
     }
 };
 
-void task(Leg * leg){
-    while (true){
-        leg->step();
-    }
-}
-
 int main(){
     Leg leg1("Front left", "RE!");
     Leg leg2("Front right", "SPECT!");
@@ -52,11 +52,11 @@ int main(){
     leg2.next_leg = &leg3;
     leg3.next_leg = &leg4;
     leg4.next_leg = &leg1;
-
-    thread t4(task, &leg4);
-    thread t1(task, &leg1);
-    thread t3(task, &leg3);
-    thread t2(task, &leg2);
+    
+    thread t4(Leg::walk, &leg4);
+    thread t1(Leg::walk, &leg1);
+    thread t3(Leg::walk, &leg3);
+    thread t2(Leg::walk, &leg2);
     
     leg1.mtx.unlock();
 
