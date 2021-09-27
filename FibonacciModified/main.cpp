@@ -8,41 +8,46 @@ vector<string> split(const string &);
 
 class InfiniteInt{
 public:
-    string str_val;
+    vector<char> digits;
     const map<int, char> to_char = {{0, '0'}, {1, '1'}, {2, '2'}, {3, '3'}, {4, '4'},
                                     {5, '5'}, {6, '6'}, {7, '7'}, {8, '8'}, {9, '9'}};
     const map<char, int> to_int = {{'0', 0}, {'1', 1}, {'2', 2}, {'3', 3}, {'4', 4},
                                    {'5', 5}, {'6', 6}, {'7', 7}, {'8', 8}, {'9', 9}};
     
-    InfiniteInt() {str_val = "0";}
-    InfiniteInt(string val) {str_val = val;}
-    InfiniteInt(char val) {str_val = val;}
-    InfiniteInt(int val) {str_val = to_string(val);}
-    InfiniteInt(const InfiniteInt& other) {str_val = other.str_val;}
-    
-    void operator = (const InfiniteInt & other) {str_val = other.str_val;}
-    
-    void operator+=(const InfiniteInt & other) {
-        *this += other.str_val;
+    InfiniteInt() {digits = vector<char>({'0'});}
+    InfiniteInt(char one_digit) {digits = vector<char>({one_digit});}
+    InfiniteInt(string val) {digits = vector<char>(val.rbegin(), val.rend());}
+    InfiniteInt(int val) {
+        string str_val = to_string(val);
+        digits = vector<char>(str_val.rbegin(), str_val.rend());
     }
-    void operator+=(const string & other) {
-        //cout << "(+1) " << str_val << endl;
-        //cout << "(+2) " << other << endl;
-        string s1 = str_val, s2 = other;
-        if (other == "0")
+    InfiniteInt(InfiniteInt& other) {digits = other.digits;}
+
+    string as_string(){
+        return string(digits.rbegin(), digits.rend());
+    }
+    
+    void operator+=(InfiniteInt & other) {
+        *this += other.digits;
+    }
+    void operator+=(vector<char> & other) {
+        if (other.size() == 1 && other[0] == '0')
             return;
-        if (str_val == "0"){
-            str_val = other;
+        if (digits.size() == 1 && digits[0] == '0'){
+            digits = other;
             return;
         }
+
+        vector<char> * d1 = &digits;
+        vector<char> * d2 = &other;
         
         int carry = 0;
-        int max_len = max(s1.length(), s2.length());
+        int max_len = max(d1->size(), d2->size());
 
         vector<char> result;
         for (int i = 0; i < max_len; i++) {
-            int c1 = i < s1.length() ? to_int.at(s1[s1.length() - i - 1]) : 0;
-            int c2 = i < s2.length() ? to_int.at(s2[s2.length() - i - 1]) : 0;
+            int c1 = i < d1->size() ? to_int.at(d1->at(i)) : 0;
+            int c2 = i < d2->size() ? to_int.at(d2->at(i)) : 0;
             int all_sum = c1 + c2 + carry;
             result.push_back(to_char.at(all_sum % 10));
             carry = all_sum / 10;
@@ -53,25 +58,26 @@ public:
         while (result.size() > 1 && result[result.size() - 1] == '0')
             result.pop_back();
         
-        str_val = string(result.rbegin(), result.rend());
+        digits = result;
     }
     
-    void operator*=(const InfiniteInt & other) {
-        *this *= other.str_val;
+    void operator*=(InfiniteInt & other) {
+        *this *= other.digits;
     }
-    void operator*=(const string & other) {
-        //cout << "(*1) " << str_val << endl;
-        string s1 = str_val, s2 = other;
-        
-        if (s2 == "0" || s1 == "0"){
-            str_val = "0";
-            cout << "mult 0" << endl;
+    void operator*=(vector<char> & other) {
+        if ((digits.size() == 1 && digits[0] == '0') ||
+            (other.size() == 1 && other[0] == '0')) {
+            digits = vector<char>({'0'});
+            //cout << "mult 0" << endl;
             return;
         }
 
+        vector<char> * d1 = &digits;
+        vector<char> * d2 = &other;
+
         InfiniteInt result;
-        for (int j = 0; j < s2.length(); j++) {
-            int c2 = to_int.at(s2[s2.length() - j - 1]);
+        for (int j = 0; j < d2->size(); j++) {
+            int c2 = to_int.at(d2->at(j));
             
             if (c2 == 0)
                 continue;
@@ -81,8 +87,8 @@ public:
             for (int z = 0; z < j; z++)
                 inter.push_back('0');
             
-            for (int i = 0; i < s1.length(); i++){
-                int c1 = to_int.at(s1[s1.length() - i - 1]);
+            for (int i = 0; i < d1->size(); i++){
+                int c1 = to_int.at(d1->at(i));
                 int all_sum = c1 * c2 + carry;
                 inter.push_back(to_char.at(all_sum % 10));
                 carry = all_sum / 10;
@@ -93,11 +99,12 @@ public:
             while (inter.size() > 1 && inter[inter.size() - 1] == '0')
                 inter.pop_back();
             
-            result += string(inter.rbegin(), inter.rend());
+            result += inter;
             inter.clear();
         }
         
-        str_val = result.str_val;    }
+        digits = result.digits;
+    }
 };
 
 string fibonacciModified(int t1, int t2, int n) {
@@ -107,14 +114,14 @@ string fibonacciModified(int t1, int t2, int n) {
         InfiniteInt temp(i2);
         i2 *= i2;
         i2 += i1;
-        i1.str_val = temp.str_val;
-        cout << "(" << i << ") " << i2.str_val << endl;
+        i1.digits = temp.digits;
+        //cout << "(" << i << ") " << i2.as_string() << endl;
     }
         
-    return i2.str_val;
+    return i2.as_string();
 }
 
 int main(){
-    string result = fibonacciModified(1, 1, 20);
+    string result = fibonacciModified(2, 0, 12);
     cout << result << endl;
 }
