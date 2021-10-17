@@ -18,7 +18,7 @@ def chance_to_win_k(n, k, p):
 
 
 def main():
-    p = 0.20    # Foggy's chance to win 1 map
+    p = 0.22    # Foggy's chance to win 1 map
     c0 = chance_to_win_k(5, 0, p)
     c1 = chance_to_win_k(5, 1, p)
     c2 = chance_to_win_k(5, 2, p)
