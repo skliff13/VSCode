@@ -18,7 +18,7 @@ def chance_to_win_k(n, k, p):
 
 
 def main():
-    p = 0.22  # Foggy's chance to win 1 map
+    p = 0.20    # Foggy's chance to win 1 map
     c0 = chance_to_win_k(5, 0, p)
     c1 = chance_to_win_k(5, 1, p)
     c2 = chance_to_win_k(5, 2, p)
@@ -32,6 +32,7 @@ def main():
     print('Chance to win 4-1: ', round(c4, 8))
     print('Chance to win 5-0: ', round(c5, 8))
     print('Chance to win BO5: ', round(c3 + c4 + c5, 8))
+    print('Ceck sum: ', round(c0 + c1 + c2 + c3 + c4 + c5, 8))
 
 
 if __name__ == '__main__':
